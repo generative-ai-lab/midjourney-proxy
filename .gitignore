@@ -40,3 +40,4 @@ config/application.yml
 hs_err_pid*
 
 myconfig
+client
