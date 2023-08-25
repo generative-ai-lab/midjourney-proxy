@@ -44,3 +44,6 @@ client
 
 # logs
 logs
+
+# environment variables
+.env
