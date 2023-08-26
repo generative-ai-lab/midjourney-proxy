@@ -12,6 +12,7 @@ logging.basicConfig(filename='/home/midjourney-authorization/logs/logs.log',
 logging.info("Logger initialized")
 
 token = os.getenv("MJ_DISCORD_USER_TOKEN")
+user_agent = os.getenv("USER_AGENT")
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -19,7 +20,8 @@ from selenium.webdriver.chrome.options import Options
 logging.info("Webdriver downloaded")
 
 options = Options()
-options.add_argument('--headless') #optional.
+options.add_argument('--headless')
+options.add_argument(f'--user-agent={user_agent}')
 
 script = '''
     const login = (token) => {

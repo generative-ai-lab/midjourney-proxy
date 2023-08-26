@@ -24,6 +24,7 @@ services:
     entrypoint: ["python3", "main.py"]
     environment:
       - MJ_DISCORD_USER_TOKEN
+      - USER_AGENT=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36
   midjourney-proxy:
     depends_on:
       - midjourney-authorization
@@ -41,5 +42,6 @@ services:
       - mj.discord.guild-id=${MJ_DISCORD_GUILD_ID}
       - mj.discord.channel-id=${MJ_DISCORD_CHANNEL_ID}
       - mj.discord.user-token=${MJ_DISCORD_USER_TOKEN}
+      - mj.discord.user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36
     networks:
       - default
