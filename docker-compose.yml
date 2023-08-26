@@ -11,7 +11,22 @@ services:
       - '6379'
     networks:
       - default
+  midjourney-authorization:
+    build: 
+      context: ./midjourney-authorization
+      dockerfile: Dockerfile
+    container_name: midjourney-authorization
+    restart: "no"
+    volumes:
+      - ./logs/midjourney-authorization:/home/midjourney-authorization/logs
+      - ./midjourney-authorization:/app
+    working_dir: /app
+    entrypoint: ["python3", "main.py"]
+    environment:
+      - MJ_DISCORD_USER_TOKEN
   midjourney-proxy:
+    depends_on:
+      - midjourney-authorization
     build:
       context: .
       dockerfile: Dockerfile

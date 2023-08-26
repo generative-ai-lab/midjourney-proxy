@@ -1,16 +1,24 @@
 # midjourney-proxy
 
 ## Запуск
-1. Создать папку myconfig в корне проекта.
-2. Скопировать туда файл по пути src/main/resources/application.yml<br>
+### Как отдельный контейнер
+
+1. Прописать конфиг
+- Создать папку myconfig в корне проекта.
+- Скопировать туда файл по пути src/main/resources/application.yml<br>
 (Необязательно) скопировать по этому же пути файл banned-words.txt, если в промпте встретится какое-то слово из списка, запрос не будет выполнен
-3. Заменить значения guild-id (id сервера), channel-id (id канала в этом сервере), user-token (токен юзера, можно получить по этому [гайду](https://www.howtogeek.com/879956/what-is-a-discord-token-and-how-do-you-get-one/))<br>
+- Заменить значения guild-id (id сервера), channel-id (id канала в этом сервере), user-token (токен юзера, можно получить по этому [гайду](https://www.howtogeek.com/879956/what-is-a-discord-token-and-how-do-you-get-one/))<br>
 Авторы также рекомендуют заменить session-id на свое значение, но вроде работает и так
-4. Сбилдить образ 
+
+ИЛИ
+
+Создать файл .env, прописать там переменные окружения MJ_DISCORD_GUILD_ID, MJ_DISCORD_CHANNEL_ID и MJ_DISCORD_USER_TOKEN
+
+2. Сбилдить образ 
 ```shell
 docker build . -t midjourney-proxy
 ```
-5. Запустить контейнер
+3. Запустить контейнер
 - Linux:
 ```shell
 docker run -d --name midjourney-proxy -p 8080:8080 -v $(pwd)/myconfig:/home/spring/config midjourney-proxy
@@ -18,6 +26,19 @@ docker run -d --name midjourney-proxy -p 8080:8080 -v $(pwd)/myconfig:/home/spri
 - Windows (PowerShell):
 ```shell
 docker run -d --name midjourney-proxy -p 8080:8080 -v ${pwd}/myconfig:/home/spring/config midjourney-proxy
+```
+- Linux или Windows через переменные окружения:
+```shell
+docker run -d --name midjourney-proxy -p 8080:8080 -e mj.discord.guild-id=${MJ_DISCORD_GUILD_ID} -e mj.discord.channel-id=${MJ_DISCORD_CHANNEL_ID} -e mj.discord.user-token=${MJ_DISCORD_USER_TOKEN} midjourney-proxy
+```
+
+### Через docker compose
+
+1. Создать файл .env, прописать там переменные окружения MJ_DISCORD_GUILD_ID, MJ_DISCORD_CHANNEL_ID и MJ_DISCORD_USER_TOKEN
+
+2. Запустить
+```shell
+docker compose -f docker-compose.yml up
 ```
 
 ## Особенности
