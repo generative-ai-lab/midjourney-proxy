@@ -30,7 +30,7 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      # - ./myconfig:/home/spring/config
+      - ./myconfig:/home/spring/config
       - ./logs:/home/spring/logs
     ports:
       - 10100:8080
