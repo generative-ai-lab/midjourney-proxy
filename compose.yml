@@ -1,16 +1,20 @@
 version: '3.7'
 
 services:
-  redis:
+  mj-redis:
     image: redis:alpine
-    container_name: redis
+    container_name: mj-redis
     volumes:
-      - redis_data:/data
+      - redis_data_1:/data
+    hostname: mj-redis
+    networks:
+      - default
     restart: "always"
   midjourney-authorization:
     build: 
       context: ./midjourney-authorization
       dockerfile: Dockerfile
+    # image: c7cc3c9d2740
     container_name: midjourney-authorization
     restart: "no"
     volumes:
@@ -25,12 +29,13 @@ services:
   midjourney-proxy:
     depends_on:
       - midjourney-authorization
-      - redis
+      - mj-redis
+    # image: 20f81377f2f9
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
-      # - ./myconfig:/home/spring/config
+      - ./myconfig:/home/spring/config
       - ./logs:/home/spring/logs
     ports:
       - 10100:8080
@@ -38,11 +43,13 @@ services:
       - .env
     environment:
       - JAVA_OPTS=-XX:MaxRAMPercentage=10 -Djava.awt.headless=true -XX:+HeapDumpOnOutOfMemoryError -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -Xlog:gc:file=/home/spring/logs/gc.log -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9876 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dlogging.file.path=/home/spring/logs -Dserver.port=8080
-      - mj.discord.guild-id=${MJ_DISCORD_GUILD_ID}
-      - mj.discord.channel-id=${MJ_DISCORD_CHANNEL_ID}
-      - mj.discord.user-token=${MJ_DISCORD_USER_TOKEN}
-      - mj.discord.user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36
+      # - mj.discord.guild-id=${MJ_DISCORD_GUILD_ID}
+      # - mj.discord.channel-id=${MJ_DISCORD_CHANNEL_ID}
+      # - mj.discord.user-token=${MJ_DISCORD_USER_TOKEN}
+      # - mj.discord.user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36
     restart: "always"
+    networks:
+      - default
 
 volumes:
-  redis_data:
+  redis_data_1:

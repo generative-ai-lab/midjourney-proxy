@@ -13,7 +13,7 @@ target/
 .DS_Store
 
 ### application config #
-config/application.yml
+myconfig/application.yml
 
 .git
 .gitignore
