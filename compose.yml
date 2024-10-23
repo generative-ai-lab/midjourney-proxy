@@ -10,6 +10,14 @@ services:
     networks:
       - default
     restart: "always"
+  gost:
+    image: ginuerzh/gost:latest
+    environment:
+      - TZ=Europe/Moscow
+    command: -L=auto://:8880 -F=socks5://prod:31egbedof@176.222.53.132:1080
+    networks:
+      - default
+    restart: "always"
   midjourney-authorization:
     build: 
       context: ./midjourney-authorization
@@ -30,6 +38,7 @@ services:
     depends_on:
       - midjourney-authorization
       - mj-redis
+      - gost
     # image: 20f81377f2f9
     build:
       context: .

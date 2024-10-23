@@ -12,11 +12,11 @@ target/
 ### Macos ###
 .DS_Store
 
-### application config #
-myconfig/application.yml
-
 .git
 .gitignore
 docker
 docs
 README.md
+
+logs
+compose.yml

@@ -21,7 +21,24 @@
 FROM selenium/standalone-chrome
 
 USER root
-RUN apt-get update && apt-get install python3-distutils -y
-RUN wget https://bootstrap.pypa.io/get-pip.py
-RUN python3 get-pip.py
-RUN python3 -m pip install selenium
+
+# Установка необходимых пакетов
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip python3-venv wget && \
+    apt-get clean
+
+# Создание и настройка виртуальной среды
+RUN python3 -m venv /opt/venv
+
+# Активируем виртуальную среду
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Установка pip и selenium в виртуальной среде
+RUN pip install --upgrade pip && \
+    pip install selenium
+
+# Удаление временных файлов
+RUN rm -f get-pip.py
+
+# Установка рабочего каталога
+WORKDIR /app
