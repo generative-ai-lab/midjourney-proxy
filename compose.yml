@@ -18,28 +18,29 @@ services:
     networks:
       - default
     restart: "always"
-  midjourney-authorization:
-    build: 
-      context: ./midjourney-authorization
-      dockerfile: Dockerfile
-    # image: c7cc3c9d2740
-    container_name: midjourney-authorization
-    restart: "no"
-    volumes:
-      - ./logs/midjourney-authorization:/home/midjourney-authorization/logs
-      - ./midjourney-authorization:/app
-    working_dir: /app
-    entrypoint: ["python3", "main.py"]
-    env_file:
-      - .env
-    environment:
-      - USER_AGENT=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36
+  # midjourney-authorization:
+  #   build: 
+  #     context: ./midjourney-authorization
+  #     dockerfile: Dockerfile
+  #   # image: c7cc3c9d2740
+  #   container_name: midjourney-authorization
+  #   restart: "no"
+  #   volumes:
+  #     - ./logs/midjourney-authorization:/home/midjourney-authorization/logs
+  #     - ./midjourney-authorization:/app
+  #   working_dir: /app
+  #   entrypoint: ["python3", "main.py"]
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - USER_AGENT=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36
   midjourney-proxy:
     depends_on:
-      - midjourney-authorization
+      # - midjourney-authorization
       - mj-redis
       - gost
     # image: 20f81377f2f9
+    container_name: midjourney-proxy
     build:
       context: .
       dockerfile: Dockerfile
@@ -59,6 +60,20 @@ services:
     restart: "always"
     networks:
       - default
+
+  restarter:
+    image: docker:cli
+    restart: always
+    volumes: ["/var/run/docker.sock:/var/run/docker.sock"]
+    entrypoint: ["/bin/sh","-c"]
+    command:
+      - |
+        while true; do
+          if [ "$$(date +'%H:%M')" = '00:00' ]; then
+            docker restart midjourney-proxy
+          fi
+          sleep 60
+        done
 
 volumes:
   redis_data_1:
